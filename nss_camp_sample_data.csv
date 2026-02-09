@@ -1,0 +1,11 @@
+student_name,student_id,date,time_slot,course_code,section,faculty_name,hour_type,faculty_type,alt_faculty_name,faculty_email,alt_faculty_email
+Rahul Kumar,2200080137,19/02/2025,3,23EC1505,S1,Dr. Ramesh Kumar,Lecture,A,,intelligentsia@kluniversity.in,
+Priya Sharma,2200080234,19/02/2025,4,23EC1505,S1,Dr. Ramesh Kumar,Practical,B,Dr. Mohan Singh,intelligentsia@kluniversity.in,2200080137@kluniversity.in
+Amit Patel,2200080156,20/02/2025,5,23CS2401,S2,Prof. Suresh Babu,Lecture,A,,intelligentsia@kluniversity.in,
+Sneha Reddy,2200080289,19/02/2025,7,23AI3201,S3,Dr. Lakshmi Devi,Skill,C,Ms. Kavita Rao,intelligentsia@kluniversity.in,2200080137@kluniversity.in
+Vijay Krishna,2200080345,20/02/2025,2,23EC1505,S1,Dr. Ramesh Kumar,Lecture,A,,intelligentsia@kluniversity.in,
+Anjali Mehta,2200080412,21/02/2025,6,23DS2301,S4,Prof. Naresh Varma,Practical,B,Dr. Srinivas Rao,intelligentsia@kluniversity.in,2200080137@kluniversity.in
+Karthik Sai,2200080501,19/02/2025,9,23AI3201,S3,Dr. Lakshmi Devi,Lecture,A,,intelligentsia@kluniversity.in,
+Deepika Agarwal,2200080578,20/02/2025,4,23CS2401,S2,Prof. Suresh Babu,Practical,C,Ms. Rekha Sharma,intelligentsia@kluniversity.in,2200080137@kluniversity.in
+Rohan Gupta,2200080623,21/02/2025,8,23EC1505,S1,Dr. Ramesh Kumar,Skill,B,Dr. Mohan Singh,intelligentsia@kluniversity.in,2200080137@kluniversity.in
+Pooja Yadav,2200080701,19/02/2025,3,23DS2301,S4,Prof. Naresh Varma,Lecture,A,,intelligentsia@kluniversity.in,
