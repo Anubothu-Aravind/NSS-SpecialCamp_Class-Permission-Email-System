@@ -10,6 +10,389 @@ from collections import defaultdict
 
 st.set_page_config(page_title="NSS Special Camp - Permission System", layout="wide")
 
+# Helper function to build responsive email template
+def build_email_template(greeting, intro, body, closing, title="NSS Special Camp - Permission Request", title_color="Red", title_text_color="White"):
+    """
+    Builds a responsive email template with custom content and styling.
+    
+    Args:
+        greeting (str): Email greeting
+        intro (str): Opening message
+        body (str): Main request content
+        closing (str): Closing and signature
+        title (str): Email header title
+        title_color (str): Color name for header background
+        title_text_color (str): Color name for header text
+    
+    Returns:
+        str: Complete HTML email template
+    """
+    # Color mapping
+    color_map = {
+        "Red": "#d9534f",
+        "Black": "#2c3e50",
+        "White": "#ffffff",
+        "Blue": "#3498db",
+        "Green": "#27ae60",
+        "Purple": "#9b59b6",
+        "Gray": "#7f8c8d"
+    }
+    
+    bg_color = color_map.get(title_color, "#d9534f")
+    text_color = color_map.get(title_text_color, "#ffffff")
+    
+    return f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{title}</title>
+    <style>
+        body {{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            color: #2c3e50;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }}
+        .email-container {{
+            max-width: 850px;
+            margin: 20px auto;
+            padding: 0;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+            overflow: hidden;
+        }}
+        .header {{
+            background: {bg_color};
+            padding: 25px;
+            text-align: center;
+            color: {text_color};
+        }}
+        .header h1 {{
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }}
+        .content {{
+            padding: 30px;
+        }}
+        .content p {{
+            margin-bottom: 15px;
+            white-space: pre-wrap;
+        }}
+        .highlight {{
+            background-color: #fff3cd;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            margin: 20px 0;
+            border-radius: 4px;
+        }}
+        /* Responsive Email-Safe Table */
+        table {{
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 14px;
+            background: #fff;
+        }}
+        table th {{
+            background-color: #34495e;
+            color: white;
+            padding: 12px 8px;
+            text-align: left;
+            font-weight: 600;
+            border: 1px solid #2c3e50;
+        }}
+        table td {{
+            padding: 10px 8px;
+            border: 1px solid #ecf0f1;
+            word-wrap: break-word;
+            vertical-align: top;
+        }}
+        table tr:nth-child(even) {{
+            background-color: #f8f9fa;
+        }}
+        table tr:hover {{
+            background-color: #e9ecef;
+        }}
+        /* Mobile-specific styles */
+        @media only screen and (max-width: 600px) {{
+            .email-container {{
+                margin: 10px;
+                border-radius: 8px;
+            }}
+            .content {{
+                padding: 20px 15px;
+            }}
+            .header {{
+                padding: 20px 15px;
+            }}
+            .header h1 {{
+                font-size: 18px;
+            }}
+            table {{
+                font-size: 11px;
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }}
+            table th, table td {{
+                padding: 8px 4px;
+                font-size: 11px;
+                min-width: 60px;
+            }}
+            .highlight {{
+                padding: 10px;
+                margin: 15px 0;
+            }}
+        }}
+        .footer {{
+            margin-top: 30px;
+            padding: 20px 30px;
+            background-color: #f8f9fa;
+            text-align: center;
+            font-size: 12px;
+            color: #6c757d;
+            border-top: 1px solid #dee2e6;
+        }}
+        .signature {{
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 2px solid #e9ecef;
+        }}
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h1>{title}</h1>
+        </div>
+        <div class="content">
+            <p><b>{greeting}</b></p>
+            
+            <p>{intro}</p>
+            
+            <div class="highlight">
+                <p><strong>We kindly request you to grant permission for their absence from the following class(es):</strong></p>
+            </div>
+            
+            [student_table]
+            
+            <p>{body}</p>
+            
+            <div class="signature">
+                <p>{closing}</p>
+            </div>
+        </div>
+        <div class="footer">
+            <p><strong>NSS Unit - KL University</strong></p>
+            <p>Instagram: <a href="https://www.instagram.com/klef_nss_official/">@klef_nss_official</a> | 
+            Telegram: <a href="https://t.me/+k_Bt9R_WDxVjNGJl">@KLEF_NSS_Y23 BATCH</a></p>
+        </div>
+    </div>
+</body>
+</html>
+"""
+
+# Helper function to get email template (default or custom)
+def get_email_template(custom_template=None, use_custom=False):
+    """
+    Returns the email template to use.
+    If use_custom is True and custom_template is provided, returns custom template.
+    Otherwise, returns the default template.
+    
+    Args:
+        custom_template (str): Optional custom email template
+        use_custom (bool): Flag to enable custom template
+    
+    Returns:
+        str: Email template HTML
+    """
+    if use_custom and custom_template and custom_template.strip():
+        return custom_template
+    
+    # Default template - hardcoded fallback
+    return """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NSS Special Camp - Permission Request</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            color: #2c3e50;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        .email-container {
+            max-width: 850px;
+            margin: 20px auto;
+            padding: 0;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #d9534f 0%, #c9302c 100%);
+            padding: 25px;
+            text-align: center;
+            color: white;
+        }
+        .header img {
+            display: block;
+            margin: 0 auto 15px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        .content {
+            padding: 30px;
+        }
+        .content p {
+            margin-bottom: 15px;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        /* Responsive Email-Safe Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 14px;
+            background: #fff;
+        }
+        table th {
+            background-color: #34495e;
+            color: white;
+            padding: 12px 8px;
+            text-align: left;
+            font-weight: 600;
+            border: 1px solid #2c3e50;
+        }
+        table td {
+            padding: 10px 8px;
+            border: 1px solid #ecf0f1;
+            word-wrap: break-word;
+            vertical-align: top;
+        }
+        table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        table tr:hover {
+            background-color: #e9ecef;
+        }
+        /* Mobile-specific styles */
+        @media only screen and (max-width: 600px) {
+            .email-container {
+                margin: 10px;
+                border-radius: 8px;
+            }
+            .content {
+                padding: 20px 15px;
+            }
+            .header {
+                padding: 20px 15px;
+            }
+            .header h1 {
+                font-size: 18px;
+            }
+            table {
+                font-size: 11px;
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            table th, table td {
+                padding: 8px 4px;
+                font-size: 11px;
+                min-width: 60px;
+            }
+            .highlight {
+                padding: 10px;
+                margin: 15px 0;
+            }
+        }
+        .footer {
+            margin-top: 30px;
+            padding: 20px 30px;
+            background-color: #f8f9fa;
+            text-align: center;
+            font-size: 12px;
+            color: #6c757d;
+            border-top: 1px solid #dee2e6;
+        }
+        .signature {
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 2px solid #e9ecef;
+        }
+        .header img {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <img src="https://i.imgur.com/jkpf1qu.png" alt="NSS Logo" width="180">
+            <h1>NSS Special Camp - Permission Request</h1>
+        </div>
+        <div class="content">
+            <p>Dear <b>[faculty_name]</b>,</p>
+            
+            <p>Greetings from NSS Unit, KL University!</p>
+            
+            <div class="highlight">
+                <p><strong>Subject:</strong> Permission Request for Students Attending NSS Special Camp</p>
+            </div>
+            
+            <p>This is to inform you that the following student(s) from your <b>[course_code] - Section [section]</b> class will be attending the <strong>NSS Special Camp</strong> during the week of <b>19th February 2025</b>.</p>
+            
+            <p>We kindly request you to grant permission for their absence from the following class(es):</p>
+            
+            [student_table]
+            
+            <p>The students are participating in this camp as part of their NSS commitment and community service responsibilities. We request you to kindly grant them permission and allow them to complete any missed assignments or assessments at a later date.</p>
+            
+            <p><strong>Attached Documents:</strong> Official permission letter(s) and camp notification.</p>
+            
+            <p>We sincerely appreciate your understanding and cooperation in this matter.</p>
+            
+            <div class="signature">
+                <p><strong>Best regards,</strong><br>
+                <b>[sender_name]</b><br>
+                [sender_designation]<br>
+                Department of AI & DS<br>
+                NSS Unit, KL University<br>
+                Email: [sender_email]</p>
+            </div>
+        </div>
+        <div class="footer">
+            <p><strong>NSS Unit - KL University</strong></p>
+            <p>Instagram: <a href="https://www.instagram.com/klef_nss_official/">@klef_nss_official</a> | 
+            Telegram: <a href="https://t.me/+k_Bt9R_WDxVjNGJl">@KLEF_NSS_Y23 BATCH</a></p>
+        </div>
+    </div>
+</body>
+</html>
+"""
+
 # Streamlit app
 st.title("NSS Special Camp - Class Permission Email System")
 st.markdown("**For students attending NSS Special Camp (Week of 19th February 2025)**")
@@ -51,6 +434,206 @@ with col2:
         "CC Email Addresses (comma-separated, optional)",
         placeholder="email1@kluniversity.in, email2@kluniversity.in"
     )
+
+# Email Matter Customization Feature (Optional)
+st.subheader("✉️ Email Content (Optional Customization)")
+
+col_toggle, col_reset = st.columns([3, 1])
+with col_toggle:
+    use_custom_template = st.checkbox(
+        "✏️ Edit Email Content",
+        value=False,
+        help="Enable this to customize the email message content. Leave unchecked to use the default content."
+    )
+with col_reset:
+    if use_custom_template:
+        if st.button("🔄 Reset to Default", use_container_width=True):
+            st.rerun()
+
+custom_email_template = None
+simple_greeting = None
+simple_intro = None
+simple_body = None
+simple_closing = None
+email_title = "NSS Special Camp - Permission Request"
+email_title_color = "Red"
+email_title_text_color = "White"
+
+if use_custom_template:
+    st.markdown("---")
+    
+    # Create tabs: Content Editor and Preview
+    tab1, tab2 = st.tabs(["✏️ Edit Content", "👁️ Preview Email"])
+    
+    with tab1:
+        st.info("📝 Edit the email message content below. All formatting and styling is handled automatically.")
+        
+        # Email Title and Color Selection
+        st.markdown("### 🎨 Email Header Customization:")
+        col_title, col_bg, col_text = st.columns([2, 1, 1])
+        with col_title:
+            email_title = st.text_input(
+                "Email Title:",
+                value="NSS Special Camp - Permission Request",
+                help="The main title displayed at the top of the email",
+                key="email_title"
+            )
+        with col_bg:
+            color_options = {
+                "Red": "#d9534f",
+                "Black": "#2c3e50",
+                "White": "#ffffff",
+                "Blue": "#3498db",
+                "Green": "#27ae60",
+                "Purple": "#9b59b6",
+                "Gray": "#7f8c8d"
+            }
+            email_title_color = st.selectbox(
+                "Background Color:",
+                options=list(color_options.keys()),
+                index=0,
+                help="Select the background color for the email title",
+                key="email_title_color"
+            )
+        with col_text:
+            text_color_options = {
+                "White": "#ffffff",
+                "Black": "#2c3e50",
+                "Red": "#d9534f",
+                "Blue": "#3498db",
+                "Green": "#27ae60",
+                "Purple": "#9b59b6",
+                "Gray": "#7f8c8d"
+            }
+            email_title_text_color = st.selectbox(
+                "Text Color:",
+                options=list(text_color_options.keys()),
+                index=0,
+                help="Select the text color for the email title",
+                key="email_title_text_color"
+            )
+        
+        st.markdown("---")
+        
+        col_help1, col_help2 = st.columns(2)
+        with col_help1:
+            st.markdown("""
+            **✨ Auto-Inserted Information:**
+            - Faculty name
+            - Course code & Section
+            - Student details table
+            """)
+        with col_help2:
+            st.markdown("""
+            **📌 Your Information:**
+            - Your name
+            - Your designation
+            - Your email address
+            """)
+        
+        st.markdown("### 📧 Email Message:")
+        
+        simple_greeting = st.text_input(
+            "1️⃣ Greeting:",
+            value="Dear [faculty_name],",
+            help="How you address the faculty member",
+            key="email_greeting"
+        )
+        
+        simple_intro = st.text_area(
+            "2️⃣ Opening Message:",
+            value="Greetings from NSS Unit, KL University!\n\nThis is to inform you that the following student(s) from your [course_code] - Section [section] class will be attending the NSS Special Camp during the week of 19th February 2025.",
+            height=100,
+            help="Introduction explaining the purpose of the email",
+            key="email_intro"
+        )
+        
+        st.info("ℹ️ The student details table will be automatically inserted here")
+        
+        simple_body = st.text_area(
+            "3️⃣ Main Request:",
+            value="The students are participating in this camp as part of their NSS commitment and community service responsibilities. We request you to kindly grant them permission and allow them to complete any missed assignments or assessments at a later date.\n\nAttached Documents: Official permission letter(s) and camp notification.",
+            height=150,
+            help="Your main message and request to the faculty",
+            key="email_body"
+        )
+        
+        simple_closing = st.text_area(
+            "4️⃣ Closing & Signature:",
+            value="We sincerely appreciate your understanding and cooperation in this matter.\n\nBest regards,\n[sender_name]\n[sender_designation]\nDepartment of AI & DS\nNSS Unit, KL University\nEmail: [sender_email]",
+            height=120,
+            help="Closing message and your signature",
+            key="email_closing"
+        )
+        
+        st.success("✅ Your custom email content is ready! Switch to the Preview tab to see how it looks.")
+    
+    with tab2:
+        st.markdown("### 👁️ Email Preview")
+        st.info("📨 This is how your email will appear to the recipient")
+        
+        # Build preview template using current text input values and customizations
+        if simple_greeting and simple_intro and simple_body and simple_closing:
+            preview_template = build_email_template(
+                simple_greeting, 
+                simple_intro, 
+                simple_body, 
+                simple_closing,
+                email_title,
+                email_title_color,
+                email_title_text_color
+            )
+        else:
+            preview_template = get_email_template()
+        
+        # Create a preview with sample data
+        preview_html = preview_template.replace("[faculty_name]", "Dr. Sample Faculty") \
+            .replace("[course_code]", "23EC1505") \
+            .replace("[section]", "S1") \
+            .replace("[student_table]", """
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th>ID Number</th>
+                            <th>Date</th>
+                            <th>Slot</th>
+                            <th>Time</th>
+                            <th>Hour Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Sample Student</td>
+                            <td>2200080137</td>
+                            <td>19/02/2025</td>
+                            <td>3</td>
+                            <td>9:20 AM - 10:10 AM</td>
+                            <td>Lecture</td>
+                        </tr>
+                    </tbody>
+                </table>
+            """) \
+            .replace("[sender_name]", sender_name if sender_name else "Your Name") \
+            .replace("[sender_designation]", sender_designation if sender_designation else "Your Designation") \
+            .replace("[sender_email]", outlook_user if outlook_user else "your.email@kluniversity.in")
+        
+        st.components.v1.html(preview_html, height=800, scrolling=True)
+    
+    # Build custom email template with user's content (HTML remains hidden)
+    # This runs regardless of which tab is active, ensuring template is always available
+    if simple_greeting and simple_intro and simple_body and simple_closing:
+        custom_email_template = build_email_template(
+            simple_greeting,
+            simple_intro,
+            simple_body,
+            simple_closing,
+            email_title,
+            email_title_color,
+            email_title_text_color
+        )
+    
+    st.markdown("---")
 
 # Define the email template for faculty permission
 html_template = """
@@ -358,8 +941,9 @@ if uploaded_file and sender_name and outlook_user:
                 </table>
                 """
                 
-                # Prepare email body
-                email_body = html_template.replace("[faculty_name]", faculty_name) \
+                # Prepare email body - use custom template if enabled, otherwise use default
+                active_template = get_email_template(custom_email_template, use_custom_template)
+                email_body = active_template.replace("[faculty_name]", faculty_name) \
                     .replace("[course_code]", course_code) \
                     .replace("[section]", section) \
                     .replace("[student_table]", student_table) \
